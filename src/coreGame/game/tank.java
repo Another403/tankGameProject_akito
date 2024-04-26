@@ -171,7 +171,7 @@ public class tank implements collidible{
 		this.checkBorder();
 	}
 	
-	private void moveBackwards() {
+	private void moveForwards() {
 		vx = Math.round(this.speed * Math.cos(Math.toRadians(angle)));
 		vy = Math.round(this.speed * Math.cos(Math.toRadians(angle)));
 		x += vx;
@@ -188,5 +188,81 @@ public class tank implements collidible{
 		if (y < 40) y = 40;
 		if (y >= constants.MAP_HEIGHT - 80)
 			y = constants.MAP_HEIGHT - 80;
+	}
+	
+	public ArrayList<bullet> getAmmo() {
+		return this.ammo;
+	}
+	
+	public void getShot() {
+		this.hp -= 11;
+		
+		if (this.hp <= 0) {
+			this.lives--;
+			this.resetHp();
+		}
+		
+		if (this.lives <= 0)
+			this.isDead = true;
+	}
+	
+	public void addLife() { this.lives += 1; }
+	public void addSpeed() { this.speed += 2f; }
+	public void resetHp() { this.hp = 100; }
+	public void slowRotate() { this.rotationSpeed -= 0.25; }
+	
+	
+	void drawImage(Graphics g) {
+		AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
+		rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
+		Graphics2D g2d = (Graphics2D)g;
+		
+		if (b != null) {
+			b.drawImage(g2d);
+			this.ammo.forEach(b -> b.drawImage(g2d));
+		}
+		
+		//health bar
+		g2d.drawImage(this.img, rotation, null);
+		g2d.setColor(Color.RED);
+		
+		if (this.hp >= 70)
+			g2d.setColor(Color.GREEN);
+		else if (this.hp >= 40)
+			g2d.setColor(Color.ORANGE);
+		else 
+			g2d.setColor(Color.RED);
+		
+		g2d.drawRect((int)x - 25, (int)y - 30, 100, 25);
+		g2d.fillRect((int)x - 25, (int)y - 30, this.hp, 25);
+		
+		//lives bar
+		for (int i = 0; i < this.lives; i++) {
+			g2d.drawOval((int)(x - 25) + i * 20, (int)y + 55, 15, 15);
+			g2d.fillOval((int)(x - 25) + i * 20, (int)y + 55, 15, 15);
+		}
+	}
+	
+	@Override
+	public Rectangle getHitBox() {
+		return this.hitbox.getBounds();
+	}
+	
+	@Override
+	public void handleCollision(collidible with) {
+		if (with instanceof wall) {
+			if (isReverse) this.moveForwards();
+			else this.moveBackwards();
+		}
+		
+		if (with instanceof tank) {
+			if (isReverse) this.moveForwards();
+			else this.moveBackwards();
+		}
+	}
+	
+	@Override
+	public boolean isVisible() {
+		return this.lives > 0;
 	}
 }

@@ -9,8 +9,8 @@ import java.awt.image.BufferedImage;
 public abstract class powerups implements collidible {
 	private float x, y;
 	private BufferedImage img;
-	private Rectangle hitbox;
-	private boolean visible;
+	protected Rectangle hitbox;
+	protected boolean visible;
 	
 	public powerups(float x, float y, BufferedImage img) {
 		this.x = x;
