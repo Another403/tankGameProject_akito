@@ -20,4 +20,6 @@ public class resource {
 	public static Clip getClip(String key) {
 		return resource.clips.get(key);
 	}
+	
+	
 }

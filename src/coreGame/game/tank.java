@@ -159,6 +159,10 @@ public class tank implements collidible{
 		this.hitbox.y = y;
 	}
 	
+	public boolean getIsDead() {
+		return this.isDead;
+	}
+	
 	private void rotateLeft() { this.angle -= this.rotationSpeed; }
 	private void rotateRight() { this.angle += this.rotationSpeed; }
 	
