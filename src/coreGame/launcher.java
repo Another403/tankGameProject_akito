@@ -59,7 +59,7 @@ public class launcher {
 	private void initUIComponents() {
 		this.mainPanel = new JPanel();
 		this.startPanel = new startMenuPanel(this);
-		this.gamePanel = new GameWorld(this);
+		this.gamePanel = new gameWorld(this);
 		
 		this.cl = new CardLayout();
 		this.mainPanel.setLayout(cl);
@@ -81,6 +81,6 @@ public class launcher {
 	}
 	
 	public static void main(String[] args) {
-		//
+		(new launcher()).initUIComponents();
 	}
 }
