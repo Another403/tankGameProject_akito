@@ -1,6 +1,7 @@
 package coreGame;
 
 import coreGame.game.gameWorld;
+import coreGame.menu.startMenuPanel;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -33,10 +34,11 @@ public class resource {
             resource.images.put("wall", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/wall.png")));
             resource.images.put("cactus", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/cactus.png")));
 
-            resource.images.put("addLife", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/powerups/addLife.png")));
-            resource.images.put("addSpeed", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/powerups/addSpeed.png")));
-            resource.images.put("resetHealth", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/powerups/resetHealth.png")));
-            resource.images.put("slowRotate", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/powerups/slowRotate.png")));
+            resource.images.put("addLife", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/addLife.png")));
+            resource.images.put("addSpeed", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/addSpeed.png")));
+            resource.images.put("resetHealth", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/resetHealth.png")));
+            resource.images.put("slowRotate", ImageIO.read(gameWorld.class.getClassLoader().getResource("resources/images/slowRotate.png")));
+            //resource.images.put("background", ImageIO.read(startMenuPanel.class.getClassLoader().getResource("resources/images/menus/start.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

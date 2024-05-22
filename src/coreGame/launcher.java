@@ -6,6 +6,8 @@ import coreGame.game.gameWorld;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.awt.geom.AffineTransform;
 
 public class launcher {
 	private JPanel mainPanel;
@@ -31,7 +33,7 @@ public class launcher {
 	
 	public launcher() {
 		this.jf = new JFrame();
-		this.jf.setTitle("Multiplayer Tank Wars");
+		this.jf.setTitle("2P Tank Wars");
 		this.jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.isWinner = true;
@@ -65,7 +67,7 @@ public class launcher {
 		this.mainPanel.setLayout(cl);
 		
 		this.mainPanel.add(startPanel, "start");
-		this.mainPanel.add(startPanel, "end");
+		this.mainPanel.add(gamePanel, "game");
 		
 		this.jf.add(mainPanel);
 		this.jf.setResizable(false);
@@ -73,7 +75,7 @@ public class launcher {
 	}
 	
 	public JFrame getJf() {
-		return this.jf;
+		return jf;
 	}
 	
 	public void closeGame() {

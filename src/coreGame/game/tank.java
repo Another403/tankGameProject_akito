@@ -57,7 +57,7 @@ public class tank implements collidible{
 	float fireRate = 1f;
 	
 	private int hp = 100;
-	private int lives = 5;
+	private int lives = 3;
 	
 	private boolean isDead;
 	
@@ -131,6 +131,7 @@ public class tank implements collidible{
 		if (this.shootPressed && this.coolDown >= this.shootDelay) {
 			this.coolDown = 0;
 			b = new bullet(x, y, angle, resource.getImage("bullet"));
+			this.ammo.add(b);
 			(new sound(resource.getClip("bullet"))).playSound();
 		}
 		
@@ -168,7 +169,7 @@ public class tank implements collidible{
 	
 	private void moveBackwards() {
 		vx = Math.round(this.speed * Math.cos(Math.toRadians(angle)));
-		vy = Math.round(this.speed * Math.cos(Math.toRadians(angle)));
+		vy = Math.round(this.speed * Math.sin(Math.toRadians(angle)));
 		x -= vx;
 		y -= vy;
 		
@@ -177,7 +178,7 @@ public class tank implements collidible{
 	
 	private void moveForwards() {
 		vx = Math.round(this.speed * Math.cos(Math.toRadians(angle)));
-		vy = Math.round(this.speed * Math.cos(Math.toRadians(angle)));
+		vy = Math.round(this.speed * Math.sin(Math.toRadians(angle)));
 		x += vx;
 		y += vy;
 		
@@ -192,6 +193,9 @@ public class tank implements collidible{
 		if (y < 40) y = 40;
 		if (y >= constants.MAP_HEIGHT - 80)
 			y = constants.MAP_HEIGHT - 80;
+		
+		this.hitbox.setLocation((int)this.x, (int)this.y);
+		check_screen();
 	}
 	
 	public ArrayList<bullet> getAmmo() {
@@ -202,8 +206,8 @@ public class tank implements collidible{
 		this.hp -= 11;
 		
 		if (this.hp <= 0) {
-			this.lives--;
 			this.resetHp();
+			this.lives--;
 		}
 		
 		if (this.lives <= 0)
@@ -265,8 +269,36 @@ public class tank implements collidible{
 		}
 	}
 	
+	public int getScreen_x() {
+		return this.screen_x;
+	}
+	
+	public int getScreen_y() {
+		return this.screen_y;
+	}
+	
+	public void check_screen() {
+		this.screen_x = (int)this.getX() - constants.GAME_SCREEN_WIDTH / 4;
+		this.screen_y = (int)this.getY() - constants.GAME_SCREEN_HEIGHT / 2;
+		
+		if (this.screen_x < 0) screen_x = 0;
+		
+		if (this.screen_y < 0) screen_y = 0;
+		
+		if (this.screen_x > constants.MAP_WIDTH - constants.GAME_SCREEN_WIDTH / 2)
+            this.screen_x = constants.MAP_WIDTH - constants.GAME_SCREEN_WIDTH / 2;
+
+        if (this.screen_y > constants.MAP_HEIGHT - constants.GAME_SCREEN_HEIGHT)
+            this.screen_y = constants.MAP_HEIGHT - constants.GAME_SCREEN_HEIGHT;
+	}
+	
 	@Override
 	public boolean isVisible() {
 		return this.lives > 0;
+	}
+	
+	@Override
+	public String toString() {
+		return "x = " + x + ", y = " + y + ", angle = " + angle;
 	}
 }

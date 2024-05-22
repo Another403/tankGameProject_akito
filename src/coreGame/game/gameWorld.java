@@ -59,18 +59,21 @@ public class gameWorld extends JPanel implements Runnable {
 					
 					if (x.getHitBox().intersects(t2.getHitBox()))
 						t2.handleCollision(x);
+					
+					t1.shootOther(x);
+					t2.shootOther(x);
 				}
 				
 				for (int i = 0; i < Powerups.size(); i++) {
 					powerups t = this.Powerups.get(i);
 					
-					if (t.getHitBox().intersects(t1.getHitBox())) {
-						t1.handleCollision(t);
+					if (t.getHitBox().intersects(this.t1.getHitBox())) {
+						t.handleCollision(t1);
 						Powerups.remove(t);
 					}
 					
-					if (t.getHitBox().intersects(t2.getHitBox())) {
-						t2.handleCollision(t);
+					if (t.getHitBox().intersects(this.t2.getHitBox())) {
+						t.handleCollision(t2);
 						Powerups.remove(t);
 					}
 				}
@@ -82,9 +85,12 @@ public class gameWorld extends JPanel implements Runnable {
 					
 					if (t2.getIsDead()) lf.setWinner(true);
 					
-					this.repaint();
-					Thread.sleep(1000 / 144);
+					this.lf.setFrame("end");
+					return;
 				}
+				
+				this.repaint();
+				Thread.sleep(1000 / 144);
 			}
 		} catch (InterruptedException ignored) {
 			Thread.currentThread().interrupt();
@@ -116,7 +122,7 @@ public class gameWorld extends JPanel implements Runnable {
 		tankControl tc2 = new tankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_ENTER);
 		this.lf.getJf().addKeyListener(tc2);
 		
-		try (BufferedReader mapReader = new BufferedReader(new InputStreamReader(gameWorld.class.getClassLoader().getResourceAsStream("resources/map.txt")))) {
+		try (BufferedReader mapReader = new BufferedReader(new InputStreamReader(gameWorld.class.getClassLoader().getResourceAsStream("resources/rttt/map.txt")))) {
 			String[] size = mapReader.readLine().split(",");
 			
 			int numRows = Integer.parseInt(size[0]);
@@ -171,11 +177,11 @@ public class gameWorld extends JPanel implements Runnable {
 		Graphics2D g2d = (Graphics2D) g;
 		Graphics2D buffer = world.createGraphics();
 		
-		buffer.setColor(Color.BLACK);
+		buffer.setColor(Color.black);
 		buffer.fillRect(0, 0, constants.MAP_WIDTH, constants.MAP_HEIGHT);
 		
-		for (int i = 0; i < constants.MAP_WIDTH; i += 320)
-			for (int j = 0; j < constants.MAP_HEIGHT; i += 240)
+		for (int i = 0; i < constants.MAP_WIDTH; i += 32)
+			for (int j = 0; j < constants.MAP_HEIGHT; j += 32)
 				buffer.drawImage(resource.getImage("floor"), i, j, null);
 		
 		for (Iterator<wall> it = walls.iterator(); it.hasNext(); ) {
@@ -192,5 +198,30 @@ public class gameWorld extends JPanel implements Runnable {
 		this.t2.drawImage(buffer);
 		
 		g2d.drawImage(world, 0, 0, null);
+		this.drawSplitScreen(world, g2d);
+		this.drawMinimap(world, g2d);
+	}
+	
+	private void drawSplitScreen(BufferedImage world, Graphics2D g2) {
+        BufferedImage lh = world.getSubimage(t1.getScreen_x(), t1.getScreen_y(), constants.GAME_SCREEN_WIDTH/ 2, constants.GAME_SCREEN_HEIGHT);
+        g2.drawImage(lh, 0, 0, null);
+
+        BufferedImage rh = world.getSubimage(t2.getScreen_x(), t2.getScreen_y(), constants.GAME_SCREEN_WIDTH/ 2, constants.GAME_SCREEN_HEIGHT);
+        g2.drawImage(rh, constants.GAME_SCREEN_WIDTH/2, 0, null);
+
+        g2.setColor(Color.black);
+        g2.drawRect(constants.GAME_SCREEN_WIDTH/2 -2, 0, 4, constants.GAME_SCREEN_HEIGHT);
+        g2.fillRect(constants.GAME_SCREEN_WIDTH/2 -2, 0, 4, constants.GAME_SCREEN_HEIGHT);
+    }
+	
+	private void drawMinimap(BufferedImage world, Graphics2D g2d) {
+		BufferedImage minimap = world.getSubimage(0, 0, constants.MAP_WIDTH, constants.MAP_HEIGHT);
+		AffineTransform at = new AffineTransform();
+		
+		at.translate(constants.GAME_SCREEN_WIDTH / 2f - (constants.MAP_WIDTH * 0.2) / 2f,
+				constants.GAME_SCREEN_HEIGHT - constants.MAP_HEIGHT * 0.3);
+		
+		at.scale(.2, .2);
+		g2d.drawImage(minimap, at, null);
 	}
 }
