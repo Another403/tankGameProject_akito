@@ -102,8 +102,8 @@ public class gameWorld extends JPanel implements Runnable {
 		this.tick = 0;
 		this.t1.setX(300);
 		this.t1.setY(300);
-		this.t2.setX(800);
-		this.t2.setY(800);
+		this.t2.setX(1400);
+		this.t2.setY(1000);
 	}
 	
 	public void InitializeGame() {
@@ -114,11 +114,11 @@ public class gameWorld extends JPanel implements Runnable {
 		
 		this.sand = new sound(resource.getClip("sand"));
 		
-		t1 = new tank(300, 300, 0, 0, (short) 0, resource.getImage("tank1img"));
+		t1 = new tank(300, 300, 0, 0, (short) 0, resource.getImage("tank2img"));
 		tankControl tc1 = new tankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
 		this.lf.getJf().addKeyListener(tc1);
 		
-		t2 = new tank(800, 800, 0, 0, (short) 0, resource.getImage("tank2img"));
+		t2 = new tank(1400, 1000, 0, 0, (short) 0, resource.getImage("tank1img"));
 		tankControl tc2 = new tankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_ENTER);
 		this.lf.getJf().addKeyListener(tc2);
 		

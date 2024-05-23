@@ -14,7 +14,7 @@ public class wall implements collidible {
 	
 	protected Rectangle hitbox;
 	
-	public wall(float x, float y, BufferedImage img) {
+	public wall(float y, float x, BufferedImage img) {
 		this.x = x;
 		this.y = y;
 		this.img = img;

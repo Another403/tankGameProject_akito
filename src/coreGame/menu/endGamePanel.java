@@ -18,10 +18,10 @@ public class endGamePanel extends JPanel {
     public endGamePanel(launcher lf) {
         this.lf = lf;
 
-        String winner = "gameEnd.png";
+        String winner = "tank2end.png";
 
         if(lf.getWinner())
-            winner = "gameEnd.png";
+            winner = "tank1end.png";
 
         try {
             menuBackground = ImageIO.read(this.getClass().getClassLoader().getResource("resources/images/menus/" + winner));
@@ -36,14 +36,14 @@ public class endGamePanel extends JPanel {
 
         start = new JButton("Restart Game");
         start.setFont(new Font("Courier New", Font.BOLD, 24));
-        start.setBounds(150, 300, 250, 50);
+        start.setBounds(125, 300, 250, 50);
         start.addActionListener((actionEvent -> {
             this.lf.setFrame("game");
         }));
 
         exit = new JButton("Exit");
         exit.setFont(new Font("Courier New", Font.BOLD, 24));
-        exit.setBounds(150, 400, 250, 50);
+        exit.setBounds(125, 400, 250, 50);
         exit.addActionListener((actionEvent -> {
             this.lf.closeGame();
         }));
