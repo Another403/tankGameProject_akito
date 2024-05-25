@@ -6,9 +6,16 @@ import coreGame.resource;
 import coreGame.sound;
 import coreGame.game.powerup.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
+
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.lang.Integer;
+import java.net.URL;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
@@ -29,14 +36,17 @@ public class gameWorld extends JPanel implements Runnable {
 	private tank t1, t2;
 	private launcher lf;
 	private long tick = 0;
-
+	public Thread thread=null;
 	private sound sand;
-	
+	private static int k=0;
 	List<wall> walls = new ArrayList<wall>();
 	List<powerups> Powerups = new ArrayList<powerups>();
-	
+	private sound soundingame ;
+   
+
 	public gameWorld(launcher lf) {
 		this.lf = lf;
+		
 	}
 	
 	@Override
@@ -84,8 +94,8 @@ public class gameWorld extends JPanel implements Runnable {
 					if (t1.getIsDead()) lf.setWinner(false);
 					
 					if (t2.getIsDead()) lf.setWinner(true);
-					
 					this.lf.setFrame("end");
+					soundingame.stopSound();
 					return;
 				}
 				
@@ -105,7 +115,6 @@ public class gameWorld extends JPanel implements Runnable {
 		this.t2.setX(1400);
 		this.t2.setY(1000);
 	}
-	
 	public void InitializeGame() {
 		resource.initResources();
 		
@@ -170,6 +179,11 @@ public class gameWorld extends JPanel implements Runnable {
 			e.printStackTrace();
 			System.exit(-2);
 		}
+		
+		soundingame=(new sound(resource.getClip("soundingame")));
+		soundingame.run();
+		 
+
 	}
 	
 	@Override
