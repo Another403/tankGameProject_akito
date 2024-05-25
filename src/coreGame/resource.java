@@ -68,7 +68,11 @@ public class resource {
             clip = AudioSystem.getClip();
             clip.open(as);
             resource.clips.put("powerup", clip);
-
+            
+            as = AudioSystem.getAudioInputStream(resource.class.getClassLoader().getResource("resources/sounds/SoundInGame.wav"));
+            clip = AudioSystem.getClip();
+            clip.open(as);
+            resource.clips.put("soundingame", clip);
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
             System.err.println(e);
             e.printStackTrace();
