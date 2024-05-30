@@ -6,6 +6,7 @@ import coreGame.sound;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -73,7 +74,7 @@ public class tank implements collidible{
 		this.isReverse = false;
 		this.hitbox = new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight());
 	}
-	
+
 	void toggleUpPressed() {
 		this.upPressed = true;
 	}
@@ -113,20 +114,76 @@ public class tank implements collidible{
 	void unToggleShootPressed() {
 		this.shootPressed = false;
 	}
+
+	public  boolean isIntersect(Rectangle rect1, Rectangle rect2) {
+       
+        if (rect1.x >= rect2.x + rect2.width || 
+            rect2.x >= rect1.x + rect1.width || 
+            rect1.y >= rect2.y + rect2.height || 
+            rect2.y >= rect1.y + rect1.height) {
+            return false;
+        }
+        return true;
+    }
+	public  boolean isIntersectRight(Rectangle rect1, Rectangle rect2) {
+
+        if (rect1.x +rect1.width < rect2.x + rect2.width && 
+            rect1.x +rect1.width > rect2.x ) {
+            return true;
+        }
+        return false;
+    }
+	public  boolean isIntersectLeft(Rectangle rect1, Rectangle rect2) {
+	       
+        if (rect1.x +rect1.width > rect2.x + rect2.width && 
+            rect1.x  < rect2.x + rect2.width ) {
+            return true;
+        }
+        return false;
+    }
+	public  boolean isIntersectBelow(Rectangle rect1, Rectangle rect2) {
+	    
+        if (rect1.y +rect1.height > rect2.y  && 
+            rect1.y  +rect1.height< rect2.y + rect2.height ) {
+            return true;
+        }
+        return false;
+    }
+	public  boolean isIntersectUp(Rectangle rect1, Rectangle rect2) {
+	    
+        if (rect1.y +rect1.height > rect2.y +rect2.height && 
+            rect1.y  < rect2.y + rect2.height ) {
+            return true;
+        }
+        return false;
+    }
 	
 	void update(tank other) {
-		if (this.upPressed) {
-			this.moveForwards();
-			this.isReverse = false;
-		}
 		
 		if (this.downPressed) {
+			
+			
 			this.moveBackwards();
 			this.isReverse = true;
 		}
 		
-		if (this.leftPressed) this.rotateLeft();
-		if (this.rightPressed) this.rotateRight();
+		if (this.upPressed) {
+
+			this.moveForwards();
+			this.isReverse = false;
+		}
+		if (this.leftPressed) {
+			if(angle<-360) {
+				angle=-360+angle*(angle/360);
+			}
+			this.rotateLeft();
+		}
+		if (this.rightPressed) {
+			if(angle>360) {
+				angle=360-angle*(angle/360);
+			}
+			this.rotateRight();
+		}
 		
 		if (this.shootPressed && this.coolDown >= this.shootDelay) {
 			this.coolDown = 0;
@@ -135,15 +192,40 @@ public class tank implements collidible{
 			(new sound(resource.getClip("bullet"))).playSound();
 		}
 		
-		if (this.getHitBox().intersects(other.getHitBox()))
+		if (this.getHitBox().intersects(other.getHitBox())) {
 			handleCollision(other);
-		
+		}
 		this.coolDown += this.fireRate;
 		this.ammo.forEach(b -> b.update());
 		this.updateHitBox((int)x, (int)y);
 		this.shootOther(other);
 	}
-	
+	public void setSpeed(float speed) {
+		this.speed=speed;
+	}
+	public float getSpeed() {
+		return speed;
+	}
+	@Override
+	public void handleCollision(collidible with) {
+		if (with instanceof wall) {
+			if(isReverse) this.moveForwards();
+			else {
+				this.moveBackwards();
+			}
+			
+			if(this.leftPressed &&this.downPressed)speed=0;
+			else if(this.leftPressed &&this.upPressed)speed=0;
+			else if(this.rightPressed &&this.downPressed)speed=0;
+			else if(this.rightPressed &&this.upPressed)speed=0;
+			
+		}
+		
+		if (with instanceof tank) {
+			if (isReverse) this.moveForwards();
+			else this.moveBackwards();
+		}
+	}
 	public void shootOther(collidible other) {
 		for (int i = 0; i < this.ammo.size(); i++) {
 			bullet b = this.ammo.get(i);
@@ -167,7 +249,7 @@ public class tank implements collidible{
 	private void rotateLeft() { this.angle -= this.rotationSpeed; }
 	private void rotateRight() { this.angle += this.rotationSpeed; }
 	
-	private void moveBackwards() {
+	public void moveBackwards() {
 		vx = Math.round(this.speed * Math.cos(Math.toRadians(angle)));
 		vy = Math.round(this.speed * Math.sin(Math.toRadians(angle)));
 		x -= vx;
@@ -176,7 +258,7 @@ public class tank implements collidible{
 		this.checkBorder();
 	}
 	
-	private void moveForwards() {
+	public void moveForwards() {
 		vx = Math.round(this.speed * Math.cos(Math.toRadians(angle)));
 		vy = Math.round(this.speed * Math.sin(Math.toRadians(angle)));
 		x += vx;
@@ -249,25 +331,16 @@ public class tank implements collidible{
 			g2d.drawOval((int)(x - 25) + i * 20, (int)y + 55, 15, 15);
 			g2d.fillOval((int)(x - 25) + i * 20, (int)y + 55, 15, 15);
 		}
+
+		
+
 	}
 	
 	@Override
 	public Rectangle getHitBox() {
-		return this.hitbox.getBounds();
+        return this.hitbox.getBounds();
 	}
-	
-	@Override
-	public void handleCollision(collidible with) {
-		if (with instanceof wall) {
-			if (isReverse) this.moveForwards();
-			else this.moveBackwards();
-		}
-		
-		if (with instanceof tank) {
-			if (isReverse) this.moveForwards();
-			else this.moveBackwards();
-		}
-	}
+
 	
 	public int getScreen_x() {
 		return this.screen_x;
@@ -301,4 +374,45 @@ public class tank implements collidible{
 	public String toString() {
 		return "x = " + x + ", y = " + y + ", angle = " + angle;
 	}
+
+	public boolean isUpPressed() {
+		return upPressed;
+	}
+
+	public void setUpPressed(boolean upPressed) {
+		this.upPressed = upPressed;
+	}
+
+	public boolean isDownPressed() {
+		return downPressed;
+	}
+
+	public void setDownPressed(boolean downPressed) {
+		this.downPressed = downPressed;
+	}
+
+	public boolean isLeftPressed() {
+		return leftPressed;
+	}
+
+	public void setLeftPressed(boolean leftPressed) {
+		this.leftPressed = leftPressed;
+	}
+
+	public boolean isRightPressed() {
+		return rightPressed;
+	}
+
+	public void setRightPressed(boolean rightPressed) {
+		this.rightPressed = rightPressed;
+	}
+
+	public boolean isReverse() {
+		return isReverse;
+	}
+
+	public void setReverse(boolean isReverse) {
+		this.isReverse = isReverse;
+	}
+	
 }

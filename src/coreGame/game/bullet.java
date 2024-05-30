@@ -19,8 +19,8 @@ public class bullet implements collidible {
 	private boolean visible;
 	
 	public bullet(float x, float y, float angle, BufferedImage img) {
-		this.x = x;
-		this.y = y;
+		this.x =x-R/2+20;
+		this.y = y-R/2+20;
 		this.angle = angle;
 		this.img = img;
 		

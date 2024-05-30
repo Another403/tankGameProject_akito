@@ -4,6 +4,10 @@ import coreGame.menu.*;
 import coreGame.game.gameWorld;
 
 import java.awt.*;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -15,7 +19,6 @@ public class launcher {
 	private gameWorld gamePanel;
 	private JPanel endPanel;
 	private JFrame jf;
-	
 	private CardLayout cl;
 	
 	private boolean isWinner;
@@ -49,6 +52,7 @@ public class launcher {
 				this.gamePanel.InitializeGame();
 				this.jf.setSize(constants.GAME_SCREEN_WIDTH, constants.GAME_SCREEN_HEIGHT);
 				(new Thread(this.gamePanel)).start();
+				
 				break;
 			case "end":
 				this.jf.setSize(constants.MENU_SCREEN_WIDTH, constants.MENU_SCREEN_HEIGHT);
@@ -62,7 +66,6 @@ public class launcher {
 		this.mainPanel = new JPanel();
 		this.startPanel = new startMenuPanel(this);
 		this.gamePanel = new gameWorld(this);
-		
 		this.cl = new CardLayout();
 		this.mainPanel.setLayout(cl);
 		
@@ -83,6 +86,7 @@ public class launcher {
 	}
 	
 	public static void main(String[] args) {
+
 		(new launcher()).initUIComponents();
 	}
 }

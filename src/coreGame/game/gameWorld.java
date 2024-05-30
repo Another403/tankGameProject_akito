@@ -11,8 +11,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 
-import java.applet.Applet;
-import java.applet.AudioClip;
 import java.awt.*;
 import java.lang.Integer;
 import java.net.URL;
@@ -41,7 +39,7 @@ public class gameWorld extends JPanel implements Runnable {
 	private static int k=0;
 	List<wall> walls = new ArrayList<wall>();
 	List<powerups> Powerups = new ArrayList<powerups>();
-	private sound soundingame ;
+	private sound soundingame;
    
 
 	public gameWorld(launcher lf) {
@@ -51,25 +49,50 @@ public class gameWorld extends JPanel implements Runnable {
 	
 	@Override
 	public void run() {
+
 		try {
 			this.resetGame();
 			sand.run();
+			soundingame.run();
 			
 			while (true) {
 				this.tick++;
-				
-				this.t1.update(t2);
 				this.t2.update(t1);
+
+				this.t1.update(t2);
 				
 				for (int i = 0; i < walls.size(); i++) {
 					wall x = this.walls.get(i);
 					
-					if (x.getHitBox().intersects(t1.getHitBox()))
+					if (x.getHitBox().intersects(t1.getHitBox())) {
 						t1.handleCollision(x);
 					
+							
+					}
+					if(!x.getHitBox().intersects(t1.getHitBox())) {
+						if(t1.isDownPressed()) {
+							if(!t1.isRightPressed()&&!t1.isLeftPressed())
+								t1.setSpeed(4f);
+							
+						}
+						if(t1.isUpPressed()) {
+							if(!t1.isRightPressed()&&!t1.isLeftPressed())
+								t1.setSpeed(4f);
+						}
+					}
+
 					if (x.getHitBox().intersects(t2.getHitBox()))
 						t2.handleCollision(x);
-					
+					if(!x.getHitBox().intersects(t2.getHitBox())) {
+						if(t2.isDownPressed()) {
+							if(!t2.isRightPressed()&&!t2.isLeftPressed())
+								t2.setSpeed(4f);
+						}
+						if(t2.isUpPressed()) {
+							if(!t2.isRightPressed()&&!t2.isLeftPressed())
+								t2.setSpeed(4f);
+						}
+					}
 					t1.shootOther(x);
 					t2.shootOther(x);
 				}
@@ -110,10 +133,12 @@ public class gameWorld extends JPanel implements Runnable {
 	
 	public void resetGame() {
 		this.tick = 0;
-		this.t1.setX(300);
-		this.t1.setY(300);
-		this.t2.setX(1400);
-		this.t2.setY(1000);
+		this.t1.setX(300f);
+		this.t1.setY(300f);
+		this.t2.setX(1400f);
+		this.t2.setY(1000f);
+		this.t1.check_screen();
+		this.t2.check_screen();
 	}
 	public void InitializeGame() {
 		resource.initResources();
@@ -123,14 +148,13 @@ public class gameWorld extends JPanel implements Runnable {
 		
 		this.sand = new sound(resource.getClip("sand"));
 		
-		t1 = new tank(300, 300, 0, 0, (short) 0, resource.getImage("tank2img"));
+		t1 = new tank(300f, 300f, 0, 0, (short) 0, resource.getImage("tank2img"));
 		tankControl tc1 = new tankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
 		this.lf.getJf().addKeyListener(tc1);
 		
-		t2 = new tank(1400, 1000, 0, 0, (short) 0, resource.getImage("tank1img"));
+		t2 = new tank(1400f, 1000f, 0, 0, (short) 0, resource.getImage("tank1img"));
 		tankControl tc2 = new tankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_ENTER);
 		this.lf.getJf().addKeyListener(tc2);
-		
 		try (BufferedReader mapReader = new BufferedReader(new InputStreamReader(gameWorld.class.getClassLoader().getResourceAsStream("resources/rttt/map.txt")))) {
 			String[] size = mapReader.readLine().split(",");
 			
@@ -180,8 +204,7 @@ public class gameWorld extends JPanel implements Runnable {
 			System.exit(-2);
 		}
 		
-		soundingame=(new sound(resource.getClip("soundingame")));
-		soundingame.run();
+		soundingame=new sound(resource.getClip("soundingame"));
 		 
 
 	}
@@ -222,12 +245,11 @@ public class gameWorld extends JPanel implements Runnable {
 
         BufferedImage rh = world.getSubimage(t2.getScreen_x(), t2.getScreen_y(), constants.GAME_SCREEN_WIDTH/ 2, constants.GAME_SCREEN_HEIGHT);
         g2.drawImage(rh, constants.GAME_SCREEN_WIDTH/2, 0, null);
-
         g2.setColor(Color.black);
         g2.drawRect(constants.GAME_SCREEN_WIDTH/2 -2, 0, 4, constants.GAME_SCREEN_HEIGHT);
         g2.fillRect(constants.GAME_SCREEN_WIDTH/2 -2, 0, 4, constants.GAME_SCREEN_HEIGHT);
     }
-	
+	 	
 	private void drawMinimap(BufferedImage world, Graphics2D g2d) {
 		BufferedImage minimap = world.getSubimage(0, 0, constants.MAP_WIDTH, constants.MAP_HEIGHT);
 		AffineTransform at = new AffineTransform();

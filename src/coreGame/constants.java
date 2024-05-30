@@ -1,5 +1,4 @@
 package coreGame;
-
 public class constants {
 	public static final int MAP_WIDTH = 1920;
 	public static final int MAP_HEIGHT = 1440;

@@ -1,8 +1,12 @@
 package coreGame.menu;
 
 import coreGame.launcher;
+import coreGame.game.gameWorld;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,9 +19,9 @@ public class endGamePanel extends JPanel {
     private JButton exit;
     private launcher lf;
 
-    public endGamePanel(launcher lf) {
+    @SuppressWarnings("removal")
+	public endGamePanel(launcher lf) {
         this.lf = lf;
-
         String winner = "tank2end.png";
 
         if(lf.getWinner())
