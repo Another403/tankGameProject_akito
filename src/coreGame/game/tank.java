@@ -173,15 +173,11 @@ public class tank implements collidible{
 			this.isReverse = false;
 		}
 		if (this.leftPressed) {
-			if(angle<-360) {
-				angle=-360+angle*(angle/360);
-			}
+			
 			this.rotateLeft();
 		}
 		if (this.rightPressed) {
-			if(angle>360) {
-				angle=360-angle*(angle/360);
-			}
+			
 			this.rotateRight();
 		}
 		
